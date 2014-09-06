@@ -3,7 +3,6 @@ package etapps.sunshinetest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentActivity;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -14,6 +13,7 @@ import etapps.sunshinetest.data.WeatherContract;
  * Created by emanuele on 3/09/14.
  */
 public class Utility {
+
     //private static final String PREFS_NAME = "user.prefs";
 
     public static String getPreferredLocation(Context context) {
@@ -30,14 +30,14 @@ public class Utility {
     public static boolean isMetric(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(context.getString(R.string.units_list_pref_key),
-                context.getString(R.string.pref_units_metric))
-                .equals(context.getString(R.string.pref_units_metric));
+                context.getString(R.string.pref_units_metric_val))
+                .equals(context.getString(R.string.pref_units_metric_val));
     }
 
     static String formatTemperature(double temperature, boolean isMetric) {
         double temp;
         if ( !isMetric ) {
-            temp = 9*temperature/5+32;
+            temp = ((9*temperature)/5)+32;
         } else {
             temp = temperature;
         }

@@ -4,18 +4,13 @@ import android.annotation.TargetApi;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.test.AndroidTestCase;
 import android.util.Log;
 
-import java.util.Map;
-import java.util.Set;
-
 import etapps.sunshinetest.data.WeatherContract.LocationEntry;
 import etapps.sunshinetest.data.WeatherContract.WeatherEntry;
-import etapps.sunshinetest.data.WeatherDBHelper;
 
 /**
  * Created by emanuele on 1/09/14.
@@ -53,7 +48,6 @@ public class TestProvider extends AndroidTestCase {
                 null,
                 null
         );
-        assertEquals(0, cursor.getCount());
         cursor.close();
     }
 

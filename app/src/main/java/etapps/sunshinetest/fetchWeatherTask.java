@@ -3,16 +3,11 @@ package etapps.sunshinetest;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,13 +23,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 
-import etapps.sunshinetest.data.WeatherContract;
-import etapps.sunshinetest.data.WeatherContract.*;
+import etapps.sunshinetest.data.WeatherContract.LocationEntry;
+import etapps.sunshinetest.data.WeatherContract.WeatherEntry;
 
 /**
  * Created by emanuele on 3/09/14.
  */
-public class fetchWeatherTask extends AsyncTask<String, Void, String[]> {
+public class fetchWeatherTask extends AsyncTask<String, Void, Void> {
     private final String LOG_TAG = fetchWeatherTask.class.getSimpleName();
     private final Context mContext;
 
@@ -71,7 +66,7 @@ public class fetchWeatherTask extends AsyncTask<String, Void, String[]> {
     }
 
     @Override
-    protected String[] doInBackground(String... params) {
+    protected Void doInBackground(String... params) {
 // If there's no zip code, there's nothing to look up. Verify size of params.
         if (params.length == 0) {
             return null;
@@ -117,20 +112,20 @@ public class fetchWeatherTask extends AsyncTask<String, Void, String[]> {
             reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
             while ((line = reader.readLine()) != null) {
-// Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-// But it does make debugging a *lot* easier if you print out the completed
-// buffer for debugging.
+            // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
+            // But it does make debugging a *lot* easier if you print out the completed
+            // buffer for debugging.
                 buffer.append(line + "\n");
             }
             if (buffer.length() == 0) {
-// Stream was empty. No point in parsing.
+            // Stream was empty. No point in parsing.
                 return null;
             }
             forecastJsonStr = buffer.toString();
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
-// If the code didn't successfully get the weather data, there's no point in attemping
-// to parse it.
+            // If the code didn't successfully get the weather data, there's no point in attemping
+            // to parse it.
             return null;
         } finally {
             if (urlConnection != null) {
@@ -145,7 +140,7 @@ public class fetchWeatherTask extends AsyncTask<String, Void, String[]> {
             }
         }
         try {
-            return getWeatherDataFromJson(forecastJsonStr, numDays, locationQuery);
+            getWeatherDataFromJson(forecastJsonStr, numDays, locationQuery);
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
@@ -223,6 +218,7 @@ public class fetchWeatherTask extends AsyncTask<String, Void, String[]> {
         long locationId = addLocation(locationSetting, cityName, cityLatitude, cityLongitude);
 
         Log.v(LOG_TAG, cityName + ", with coord: " + cityLatitude + " " + cityLongitude);
+        Log.v(LOG_TAG, "units:"+unitType);
 
 
         // Get and insert the new weather information into the database
@@ -297,9 +293,9 @@ public class fetchWeatherTask extends AsyncTask<String, Void, String[]> {
             int rowsInserted = mContext.getContentResolver()
                     .bulkInsert(WeatherEntry.CONTENT_URI, cvArray);
             Log.v(LOG_TAG, "inserted " + rowsInserted + " rows of weather data");
-// Use a DEBUG variable to gate whether or not you do this, so you can easily
-// turn it on and off, and so that it's easy to see what you can rip out if
-// you ever want to remove it.
+            // Use a DEBUG variable to gate whether or not you do this, so you can easily
+            // turn it on and off, and so that it's easy to see what you can rip out if
+            // you ever want to remove it.
             if (DEBUG) {
                 Cursor weatherCursor = mContext.getContentResolver().query(
                         WeatherEntry.CONTENT_URI,
@@ -315,6 +311,7 @@ public class fetchWeatherTask extends AsyncTask<String, Void, String[]> {
                     for (String key : resultValues.keySet()) {
                         Log.v(LOG_TAG, key + ": " + resultValues.getAsString(key));
                     }
+                    weatherCursor.close();
                 } else {
                     Log.v(LOG_TAG, "Query failed! :( **********");
                 }

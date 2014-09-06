@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,18 +17,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import etapps.sunshinetest.data.WeatherContract.*;
-
 import java.util.Date;
-import java.util.List;
+
+import etapps.sunshinetest.data.WeatherContract.LocationEntry;
+import etapps.sunshinetest.data.WeatherContract.WeatherEntry;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -35,10 +31,15 @@ import java.util.List;
 
 
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-
+    // These indices are tied to FORECAST_COLUMNS. If FORECAST_COLUMNS changes, these
+// must change.
+    public static final int COL_WEATHER_ID = 0;
+    public static final int COL_WEATHER_DATE = 1;
+    public static final int COL_WEATHER_DESC = 2;
+    public static final int COL_WEATHER_MAX_TEMP = 3;
+    public static final int COL_WEATHER_MIN_TEMP = 4;
+    public static final int COL_LOCATION_SETTING = 5;
     private static final int FORECAST_LOADER = 0;
-    private String mLocation;
-
     // For the forecast view we're showing only a small subset of the stored data.
 // Specify the columns we need.
     private static final String[] FORECAST_COLUMNS = {
@@ -55,15 +56,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             WeatherEntry.COLUMN_MIN_TEMP,
             LocationEntry.COLUMN_LOCATION_SETTING
     };
-
-    // These indices are tied to FORECAST_COLUMNS. If FORECAST_COLUMNS changes, these
-// must change.
-    public static final int COL_WEATHER_ID = 0;
-    public static final int COL_WEATHER_DATE = 1;
-    public static final int COL_WEATHER_DESC = 2;
-    public static final int COL_WEATHER_MAX_TEMP = 3;
-    public static final int COL_WEATHER_MIN_TEMP = 4;
-    public static final int COL_LOCATION_SETTING = 5;
+    private final String LOG_TAG = ForecastFragment.class.getSimpleName();
+    private String mLocation;
+    // global variables
+    private SimpleCursorAdapter mForecastAdapter;
 
     public ForecastFragment() {
     }
@@ -77,7 +73,14 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onStart() {
         super.onStart();
-        UpdateWeather();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mLocation != null && !Utility.getPreferredLocation(getActivity()).equals(mLocation)) {
+            getLoaderManager().restartLoader(FORECAST_LOADER,null,this);
+        }
     }
 
     @Override
@@ -88,9 +91,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         setRetainInstance(true);
         setHasOptionsMenu(true);
     }
-
-    // global variables
-    private SimpleCursorAdapter mForecastAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -122,7 +122,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 switch (columnIndex) {
                     case COL_WEATHER_MAX_TEMP:
                     case COL_WEATHER_MIN_TEMP: {
-// we have to do some formatting and possibly a conversion
+                        // we have to do some formatting and possibly a conversion
                         ((TextView) view).setText(Utility.formatTemperature(
                                 cursor.getDouble(columnIndex), isMetric));
                         return true;
@@ -144,9 +144,12 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Intent intent = new Intent(getActivity(), DetailsActivity.class)
-                        .putExtra(Intent.EXTRA_TEXT, "placeholder");
-                startActivity(intent);
+                Cursor cursor = mForecastAdapter.getCursor();
+                if (cursor != null && cursor.moveToPosition(position)) {
+                    Intent intent = new Intent(getActivity(), DetailsActivity.class)
+                            .putExtra(DetailsActivity.DATE_KEY, cursor.getString(COL_WEATHER_DATE));
+                    startActivity(intent);
+                }
             }
         });
         return rootView;

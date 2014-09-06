@@ -16,6 +16,8 @@ import android.view.MenuItem;
 
 import java.util.List;
 
+import etapps.sunshinetest.data.WeatherContract;
+
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
  * handset devices, settings are presented as a single list. On tablets,
@@ -38,6 +40,29 @@ public class SettingsActivity extends PreferenceActivity
      */
     private static final boolean ALWAYS_SIMPLE_PREFS = false;
     private static final String PREFS_NAME = "user.prefs";
+    private boolean mBindingPreference;
+
+    /**
+     * Helper method to determine if the device has an extra-large screen. For
+     * example, 10" tablets are extra-large.
+     */
+    private static boolean isXLargeTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
+    }
+
+    /**
+     * Determines whether the simplified settings UI should be shown. This is
+     * true if this is forced via {@link #ALWAYS_SIMPLE_PREFS}, or the device
+     * doesn't have newer APIs like {@link PreferenceFragment}, or the device
+     * doesn't have an extra-large screen. In these cases, a single-pane
+     * "simplified" settings UI should be shown.
+     */
+    private static boolean isSimplePreferences(Context context) {
+        return ALWAYS_SIMPLE_PREFS
+                || Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
+                || !isXLargeTablet(context);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,18 +122,6 @@ public class SettingsActivity extends PreferenceActivity
         // Add 'general' preferences.
         addPreferencesFromResource(R.xml.pref_general);
 
-        // Add 'notifications' preferences, and a corresponding header.
-        /*PreferenceCategory fakeHeader = new PreferenceCategory(this);
-        fakeHeader.setTitle(R.string.pref_header_notifications);
-        getPreferenceScreen().addPreference(fakeHeader);
-        addPreferencesFromResource(R.xml.pref_notification);
-
-        // Add 'data and sync' preferences, and a corresponding header.
-        fakeHeader = new PreferenceCategory(this);
-        fakeHeader.setTitle(R.string.pref_header_data_sync);
-        getPreferenceScreen().addPreference(fakeHeader);
-        addPreferencesFromResource(R.xml.pref_data_sync);*/
-
         // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
         // their values. When their values change, their summaries are updated
         // to reflect the new value, per the Android Design guidelines.
@@ -122,28 +135,6 @@ public class SettingsActivity extends PreferenceActivity
     @Override
     public boolean onIsMultiPane() {
         return isXLargeTablet(this) && !isSimplePreferences(this);
-    }
-
-    /**
-     * Helper method to determine if the device has an extra-large screen. For
-     * example, 10" tablets are extra-large.
-     */
-    private static boolean isXLargeTablet(Context context) {
-        return (context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
-    }
-
-    /**
-     * Determines whether the simplified settings UI should be shown. This is
-     * true if this is forced via {@link #ALWAYS_SIMPLE_PREFS}, or the device
-     * doesn't have newer APIs like {@link PreferenceFragment}, or the device
-     * doesn't have an extra-large screen. In these cases, a single-pane
-     * "simplified" settings UI should be shown.
-     */
-    private static boolean isSimplePreferences(Context context) {
-        return ALWAYS_SIMPLE_PREFS
-                || Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
-                || !isXLargeTablet(context);
     }
 
     /**
@@ -171,15 +162,16 @@ public class SettingsActivity extends PreferenceActivity
      * dependent on the type of preference.
      */
     private void bindPreferenceSummaryToValue(Preference preference) {
+        mBindingPreference = true;
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(this);
-
         // Trigger the listener immediately with the preference's
         // current value.
         onPreferenceChange(preference,
                 PreferenceManager
                         .getDefaultSharedPreferences(preference.getContext())
                         .getString(preference.getKey(), ""));
+        mBindingPreference = false;
     }
 
     @Override
@@ -188,24 +180,29 @@ public class SettingsActivity extends PreferenceActivity
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
 
+        // are we starting the preference activity?
+        if ( !mBindingPreference ) {
+            if (preference.getKey().equals(getString(R.string.location_pref_key))) {
+                fetchWeatherTask weatherTask = new fetchWeatherTask(this);
+                String location = value.toString();
+                weatherTask.execute(location);
+            } else {
+        // notify code that weather may be impacted
+                getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
+            }
+        }
         if (preference instanceof ListPreference) {
-            // For list preferences, look up the correct display value in
-            // the preference's 'entries' list.
-            ListPreference listPreference = (ListPreference) preference;
-            int index = listPreference.findIndexOfValue(stringValue);
-
-            // Set the summary to reflect the new value.
-            if (index >= 0) {
-                preference.setSummary(listPreference.getEntries()[index]);
-                editor.putString("units", listPreference.getEntries()[index].toString());
+        // For list preferences, look up the correct display value in
+        // the preference's 'entries' list (since they have separate labels/values).
+                    ListPreference listPreference = (ListPreference) preference;
+            int prefIndex = listPreference.findIndexOfValue(stringValue);
+            if (prefIndex >= 0) {
+                preference.setSummary(listPreference.getEntries()[prefIndex]);
             }
         } else {
-            // For all other preferences, set the summary to the value's
-            // simple string representation.
+            // For other preferences, set the summary to the value's simple string representation.
             preference.setSummary(stringValue);
-            editor.putString("location", stringValue);
         }
-        editor.commit();
         return true;
     }
 
