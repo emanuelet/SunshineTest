@@ -62,6 +62,9 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     private String mForecast;
     private String mDateStr;
 
+    private Compass compass;
+    private Direction direction;
+
     public DetailsFragment() {
         setHasOptionsMenu(true);
     }
@@ -73,6 +76,24 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        compass.stop();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        compass.stop();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        compass.start();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         Bundle arguments = getArguments();
@@ -81,6 +102,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                 !mLocation.equals(Utility.getPreferredLocation(getActivity()))) {
             getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
         }
+        compass.start();
     }
 
     @Override
@@ -103,6 +125,11 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
         humidityView = (TextView) view.findViewById(R.id.detail_humidity_textview);
         windView = (TextView) view.findViewById(R.id.detail_wind_textview);
         pressureView = (TextView) view.findViewById(R.id.detail_pressure_textview);
+        compass = new Compass(getActivity().getApplicationContext());
+        direction = new Direction(getActivity().getApplicationContext());
+        compass.arrowView = (ImageView) view.findViewById(R.id.main_image_arrow);
+        direction.arrowView = (ImageView) view.findViewById(R.id.direction_image_arrow);
+        compass.textView = (TextView) view.findViewById(R.id.degrees_text);
         return view;
     }
 
@@ -184,10 +211,12 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                     data.getDouble(data.getColumnIndex(WeatherEntry.COLUMN_MIN_TEMP)), isMetric);
 
             lowTempView.setText(low);
+            float windDir =data.getFloat(data.getColumnIndex(WeatherEntry.COLUMN_DEGREES));
             String wind = Utility.getFormattedWind(getActivity(),
                     data.getFloat(data.getColumnIndex(WeatherEntry.COLUMN_WIND_SPEED)),
-                    data.getFloat(data.getColumnIndex(WeatherEntry.COLUMN_DEGREES)));
+                    windDir);
             windView.setText(wind);
+            direction.adjustArrow(windDir);
             // Read pressure from cursor and update view
             float pressure = data.getFloat(data.getColumnIndex(WeatherEntry.COLUMN_PRESSURE));
             pressureView.setText(getActivity().getString(R.string.format_pressure, pressure));

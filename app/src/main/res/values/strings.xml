@@ -42,4 +42,6 @@
     <string name="author_pref_title">Author</string>
     <string name="author_pref_summ" translatable="false">Emanuele Tonello</string>
     <string name="prefs_web_page">Original App</string>
+    <string name="north_direction">North Direction:</string>
+    <string name="wind_direction">Wind Direction:</string>
 </resources>
