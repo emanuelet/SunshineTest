@@ -24,4 +24,10 @@
     <string name="image_placeholder">Segnaposto immagine</string>
     <string name="author_pref_title">Autore</string>
     <string name="prefs_web_page">App Originale</string>
+    <string name="north_direction">Direzione Nord:</string>
+    <string name="notif_title">Notifiche</string>
+    <string name="notif_summary">Accendi/spegni notifiche</string>
+    <string name="wind_direction">Direzione del vento:</string>
+    <string name="about_pref_summ">Versione 1.0</string>
+    <string name="format_notification">Previsioni: <xliff:g id="condition">%1$s</xliff:g> Massima: <xliff:g id="high">%2$s</xliff:g> Minima: <xliff:g id="low">%3$s</xliff:g></string>
 </resources>

@@ -23,7 +23,11 @@
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="@string/prefs_unit_list" />
-
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="@string/notifications"
+        android:summary="@string/notif_summary"
+        android:title="@string/notif_title" />
     <EditTextPreference
         android:capitalize="words"
         android:editable="false"

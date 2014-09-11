@@ -1,5 +1,6 @@
 package etapps.sunshinetest;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +22,7 @@ import java.util.Date;
 
 import etapps.sunshinetest.data.WeatherContract.LocationEntry;
 import etapps.sunshinetest.data.WeatherContract.WeatherEntry;
+import etapps.sunshinetest.sync.SunshineSyncAdapter;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -36,6 +39,8 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
     public static final int COL_WEATHER_MIN_TEMP = 4;
     public static final int COL_LOCATION_SETTING = 5;
     public static final int COL_WEATHER_CONDITION_ID = 6;
+    public static final int COL_COORD_LAT = 7;
+    public static final int COL_COORD_LONG = 8;
     private static final int FORECAST_LOADER = 0;
     // For the forecast view we're showing only a small subset of the stored data.
     // Specify the columns we need.
@@ -52,7 +57,9 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
             WeatherEntry.COLUMN_MAX_TEMP,
             WeatherEntry.COLUMN_MIN_TEMP,
             LocationEntry.COLUMN_LOCATION_SETTING,
-            WeatherEntry.COLUMN_WEATHER_ID
+            WeatherEntry.COLUMN_WEATHER_ID,
+            LocationEntry.COLUMN_COORD_LAT,
+            LocationEntry.COLUMN_COORD_LONG
     };
     private static final String SELECTED_KEY = "selected_position";
     private final String LOG_TAG = ForecastFragment.class.getSimpleName();
@@ -62,8 +69,8 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
     private int mPosition = ListView.INVALID_POSITION;
     private ListView mListView;
     private View rootView;
-
     private boolean mUseTodayLayout;
+
     public ForecastFragment() {
     }
 
@@ -81,11 +88,6 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        UpdateWeather();
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -105,7 +107,7 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
         mForecastAdapter = new ForecastAdapter(getActivity(), null, 0);
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
 // Get a reference to the ListView, and attach this adapter to it.
-        mListView= (ListView) rootView.findViewById(R.id.listview_forecast);
+        mListView = (ListView) rootView.findViewById(R.id.listview_forecast);
         mListView.setAdapter(mForecastAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -153,17 +155,38 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // as you specify a parent activity in AndroidManifest.xml
         int id = item.getItemId();
-        if (id == R.id.action_refresh) {
-            UpdateWeather();
+        if (id == R.id.action_map) {
+            openPreferredLocationInMap();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void UpdateWeather() {
-        String location = Utility.getPreferredLocation(getActivity());
-        new fetchWeatherTask(getActivity()).execute(location);
+
+    private void openPreferredLocationInMap() {
+        if ( null != mForecastAdapter ) {
+            Cursor c = mForecastAdapter.getCursor();
+            if ( null != c ) {
+                c.moveToPosition(0);
+                String posLat = c.getString(COL_COORD_LAT);
+                String posLong = c.getString(COL_COORD_LONG);
+
+                Uri geoLocation = Uri.parse("geo:" + posLat + "," + posLong);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(geoLocation);
+
+                //in the remote case that there is no app for maps
+                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(intent);
+                } else {
+                    Log.d(LOG_TAG, "Couldn't call " + geoLocation.toString() + ", no receiving apps installed!");
+                }
+            }
+
+        }
+
     }
 
     @Override
@@ -186,7 +209,7 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.
         return new CursorLoader(
-                        getActivity(),
+                getActivity(),
                 weatherForLocationUri,
                 FORECAST_COLUMNS,
                 null,
@@ -197,6 +220,9 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data.getCount() == 0) {
+            SunshineSyncAdapter.syncImmediately(getActivity());
+        }
         mForecastAdapter.swapCursor(data);
         /*if (mPosition != ListView.INVALID_POSITION) {
         // If we don't need to restart the loader, and there's a desired position to restore
@@ -236,6 +262,7 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
             mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
         }
     }
+
     /**
      * A callback interface that all activities containing this fragment must
      * implement. This mechanism allows activities to be notified of item
