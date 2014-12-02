@@ -6,9 +6,7 @@
     <string name="action_location">Insert Location</string>
     <string name="action_refresh">Refresh</string>
     <string name="title_activity_details">Details</string>
-    <string name="hello_world">Hello world!</string>
     <string name="details_forecast">Details</string>
-    <string name="textv_default">Waiting for data…</string>
     <string name="action_map">Go to Location</string>
     <string name="share_details_icon">Share</string>
     <string name="tomorrow">Tomorrow</string>
@@ -36,8 +34,8 @@
     <string name="image_placeholder">Image Placeholder</string>
     <string name="app_description">Mr. Sunshine is a Weather App!</string>
     <string name="about_pref" translatable="false">about</string>
-    <string name="about_pref_title">About</string>
-    <string name="about_pref_summ">Version 1.0</string>
+    <string name="about_pref_title"  translatable="false">About</string>
+    <string name="about_pref_summ">Version 1.0.1</string>
     <string name="author_pref" translatable="false">author</string>
     <string name="author_pref_title">Author</string>
     <string name="author_pref_summ" translatable="false">Emanuele Tonello</string>

@@ -8,7 +8,7 @@
 
     <string name="location_pref_key" translatable="false">location</string>
     <string name="units_list_pref_key" translatable="false">units</string>
-    <string name="pref_location_title">Location</string>
+    <string name="pref_location_title">Location (ZIP Code)</string>
     <string name="pref_default_location" translatable="false">4006</string>
 
     <string name="prefs_unit_list">Temperature Units</string>
@@ -22,26 +22,7 @@
         <item>@string/pref_units_imperial_val</item>
     </string-array>
 
-    <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
 
-    <string name="pref_title_sync_frequency">Sync frequency</string>
-    <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_sync_frequency_values">
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
-        <item>-1</item>
-    </string-array>
 
     <string name="pref_units_metric">Metric</string>
     <string name="pref_units_imperial">Imperial</string>
