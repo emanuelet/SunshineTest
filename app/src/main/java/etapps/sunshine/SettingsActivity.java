@@ -1,4 +1,4 @@
-package etapps.sunshinetest;
+package etapps.sunshine;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -17,8 +17,8 @@ import android.view.MenuItem;
 
 import java.util.List;
 
-import etapps.sunshinetest.data.WeatherContract;
-import etapps.sunshinetest.sync.SunshineSyncAdapter;
+import etapps.sunshine.data.WeatherContract;
+import etapps.sunshine.sync.SunshineSyncAdapter;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On

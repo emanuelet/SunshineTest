@@ -1,4 +1,4 @@
-package etapps.sunshinetest;
+package etapps.sunshine;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -23,8 +23,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 
-import etapps.sunshinetest.data.WeatherContract.LocationEntry;
-import etapps.sunshinetest.data.WeatherContract.WeatherEntry;
+import etapps.sunshine.data.WeatherContract.LocationEntry;
+import etapps.sunshine.data.WeatherContract.WeatherEntry;
 
 /**
  * Created by emanuele on 3/09/14.

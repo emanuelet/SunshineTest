@@ -1,4 +1,4 @@
-package etapps.sunshinetest;
+package etapps.sunshine;
 
 import android.annotation.TargetApi;
 import android.content.ContentUris;
@@ -9,8 +9,8 @@ import android.os.Build;
 import android.test.AndroidTestCase;
 import android.util.Log;
 
-import etapps.sunshinetest.data.WeatherContract.LocationEntry;
-import etapps.sunshinetest.data.WeatherContract.WeatherEntry;
+import etapps.sunshine.data.WeatherContract.LocationEntry;
+import etapps.sunshine.data.WeatherContract.WeatherEntry;
 
 /**
  * Created by emanuele on 1/09/14.

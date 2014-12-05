@@ -1,4 +1,4 @@
-package etapps.sunshinetest.sync;
+package etapps.sunshine.sync;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;

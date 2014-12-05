@@ -1,11 +1,11 @@
-package etapps.sunshinetest.data;
+package etapps.sunshine.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static etapps.sunshinetest.data.WeatherContract.LocationEntry;
-import static etapps.sunshinetest.data.WeatherContract.WeatherEntry;
+import static etapps.sunshine.data.WeatherContract.LocationEntry;
+import static etapps.sunshine.data.WeatherContract.WeatherEntry;
 
 /**
  * Created by emanuele on 1/09/14.

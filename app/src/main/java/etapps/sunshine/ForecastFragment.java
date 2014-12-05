@@ -1,4 +1,4 @@
-package etapps.sunshinetest;
+package etapps.sunshine;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -20,9 +20,9 @@ import android.widget.ListView;
 
 import java.util.Date;
 
-import etapps.sunshinetest.data.WeatherContract.LocationEntry;
-import etapps.sunshinetest.data.WeatherContract.WeatherEntry;
-import etapps.sunshinetest.sync.SunshineSyncAdapter;
+import etapps.sunshine.data.WeatherContract.LocationEntry;
+import etapps.sunshine.data.WeatherContract.WeatherEntry;
+import etapps.sunshine.sync.SunshineSyncAdapter;
 
 /**
  * A placeholder fragment containing a simple view.

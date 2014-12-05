@@ -1,4 +1,4 @@
-package etapps.sunshinetest;
+package etapps.sunshine;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,7 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import etapps.sunshinetest.sync.SunshineSyncAdapter;
+import etapps.sunshine.sync.SunshineSyncAdapter;
 
 
 public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback {

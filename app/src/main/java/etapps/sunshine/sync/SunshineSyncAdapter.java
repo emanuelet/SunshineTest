@@ -1,4 +1,4 @@
-package etapps.sunshinetest.sync;
+package etapps.sunshine.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -37,11 +37,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
 
-import etapps.sunshinetest.MainActivity;
-import etapps.sunshinetest.R;
-import etapps.sunshinetest.Utility;
-import etapps.sunshinetest.data.WeatherContract.LocationEntry;
-import etapps.sunshinetest.data.WeatherContract.WeatherEntry;
+import etapps.sunshine.MainActivity;
+import etapps.sunshine.R;
+import etapps.sunshine.Utility;
+import etapps.sunshine.data.WeatherContract.LocationEntry;
+import etapps.sunshine.data.WeatherContract.WeatherEntry;
 
 /**
  * Created by emanuele on 10/09/14.

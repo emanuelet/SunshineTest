@@ -1,4 +1,4 @@
-package etapps.sunshinetest;
+package etapps.sunshine;
 
 import android.annotation.TargetApi;
 import android.content.Intent;

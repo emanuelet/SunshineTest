@@ -1,4 +1,4 @@
-package etapps.sunshinetest;
+package etapps.sunshine;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,8 +19,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import etapps.sunshinetest.data.WeatherContract.LocationEntry;
-import etapps.sunshinetest.data.WeatherContract.WeatherEntry;
+import etapps.sunshine.data.WeatherContract.LocationEntry;
+import etapps.sunshine.data.WeatherContract.WeatherEntry;
 
 /**
  * Created by emanuele on 7/09/14.

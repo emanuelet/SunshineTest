@@ -1,4 +1,4 @@
-package etapps.sunshinetest.sync;
+package etapps.sunshine.sync;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;

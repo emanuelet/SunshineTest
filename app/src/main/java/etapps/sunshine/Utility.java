@@ -1,4 +1,4 @@
-package etapps.sunshinetest;
+package etapps.sunshine;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import etapps.sunshinetest.data.WeatherContract.WeatherEntry;
+import etapps.sunshine.data.WeatherContract.WeatherEntry;
 
 /**
  * Created by emanuele on 3/09/14.

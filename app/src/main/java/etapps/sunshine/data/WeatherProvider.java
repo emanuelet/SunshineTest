@@ -1,4 +1,4 @@
-package etapps.sunshinetest.data;
+package etapps.sunshine.data;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;

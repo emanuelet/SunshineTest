@@ -3,5 +3,5 @@
     android:id="@+id/weather_detail_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="etapps.sunshinetest.DetailsActivity"
+    tools:context="etapps.sunshine.DetailsActivity"
     tools:ignore="MergeRootFrame" />

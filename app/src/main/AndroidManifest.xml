@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="etapps.sunshinetest" >
+    package="etapps.sunshine" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="etapps.sunshinetest.MainActivity"
+            android:name="etapps.sunshine.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,23 +24,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="etapps.sunshinetest.DetailsActivity"
+            android:name="etapps.sunshine.DetailsActivity"
             android:label="@string/title_activity_details"
-            android:parentActivityName="etapps.sunshinetest.MainActivity" >
+            android:parentActivityName="etapps.sunshine.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="etapps.sunshinetest.MainActivity" />
+                android:value="etapps.sunshine.MainActivity" />
         </activity>
         <activity
-            android:name="etapps.sunshinetest.SettingsActivity"
+            android:name="etapps.sunshine.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="etapps.sunshinetest.MainActivity" >
+            android:parentActivityName="etapps.sunshine.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="etapps.sunshinetest.MainActivity" />
+                android:value="etapps.sunshine.MainActivity" />
         </activity>
         <!-- SyncAdapter's dummy authentication service -->
-        <service android:name="etapps.sunshinetest.sync.SunshineAuthenticatorService" >
+        <service android:name="etapps.sunshine.sync.SunshineAuthenticatorService" >
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -51,13 +51,13 @@
         </service>
 
         <provider
-            android:name="etapps.sunshinetest.data.WeatherProvider"
+            android:name="etapps.sunshine.data.WeatherProvider"
             android:authorities="@string/content_authority"
             android:exported="false"
             android:syncable="true" />
         <!-- The SyncAdapter service -->
         <service
-            android:name="etapps.sunshinetest.sync.SunshineSyncService"
+            android:name="etapps.sunshine.sync.SunshineSyncService"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />

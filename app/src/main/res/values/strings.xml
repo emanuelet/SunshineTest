@@ -44,8 +44,8 @@
     <string name="wind_direction">Wind Direction:</string>
     <!-- Account type (for sync-adapter authenticator) -->
     <!-- SyncAdapter related -->
-    <string name="sync_account_type" translatable="false">sunshinetest.etapps</string>
-    <string name="content_authority" translatable="false">etapps.sunshinetest</string>
+    <string name="sync_account_type" translatable="false">sunshine.etapps</string>
+    <string name="content_authority" translatable="false">etapps.sunshine</string>
     <!-- Notification Format -->
 <string name="format_notification">
 Forecast: <xliff:g id="condition">%1$s</xliff:g> High: <xliff:g id="high">%2$s</xliff:g> Low: <xliff:g id="low">%3$s</xliff:g>
